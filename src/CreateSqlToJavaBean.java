@@ -21,7 +21,7 @@ public class CreateSqlToJavaBean {
                 "  `parent_comment_id` varchar(255) DEFAULT NULL COMMENT '父级评论id',\n" +
                 "  `create_comment_time` datetime DEFAULT NULL COMMENT '评论创建时间',\n" +
                 "  `like_comment_num` int(255) DEFAULT '0' COMMENT '评论点赞人数',\n" +
-                "  `unlike_comment_num` int(255) DEFAULT '0' COMMENT '评论点踩人数',\n" +
+                "  `unlike_comment_num` int(255) DEFAULT '0' COMMENT 'bigint',\n" +
                 "  PRIMARY KEY (`comment_id`)\n" +
                 ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
@@ -184,10 +184,19 @@ public class CreateSqlToJavaBean {
             }
             //获取javaType
             JdbcTypeToJavaType[] values = JdbcTypeToJavaType.values();
+            String sentence = "";
             for (JdbcTypeToJavaType value : values) {
-                if (s.contains(value.jdbcType)) {
+                //取得字段与注释之间的内容，防止其他内容影响类型的生成
+                if (s.contains("NULL")) {
+                    sentence = s.substring(s.lastIndexOf("`"), s.indexOf("NULL"));
+                } else if (s.contains("DEFAULT")) {
+                    sentence = s.substring(s.lastIndexOf("`"), s.indexOf("DEFAULT"));
+                }
+
+                if (sentence.contains(value.jdbcType)) {
                     javaType = value.javaType;
-                    if (s.contains(JdbcTypeToJavaType.BIGINT.jdbcType)){
+                    //由于bigint和int中都有int需要再次进行判断一下
+                    if (sentence.contains(JdbcTypeToJavaType.BIGINT.jdbcType)) {
                         javaType = JdbcTypeToJavaType.BIGINT.javaType;
                     }
                 }
