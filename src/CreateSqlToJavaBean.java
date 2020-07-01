@@ -338,29 +338,56 @@ public class CreateSqlToJavaBean {
      * @param status small--->小驼峰  big--->大驼峰
      * @return
      */
+//    public static String toHumpRules(String word, String status) {
+//        //获取下划线在单词中出现的次数
+//        int numberOfCharacters = getNumberOfCharacters(word, '_');
+//        //如果下划线出现的次数为0，将首字母大写并返回
+//        if (numberOfCharacters == 0) {
+//            if (status.equals("big")) {
+//                word = word.replaceFirst(word.substring(0, 1), word.substring(0, 1).toUpperCase());
+//            }
+//            return word;
+//        }
+//        StringBuffer humpRulesWord = new StringBuffer(word);
+//        if (status.equals("big")) {
+//            //将首字母大写
+//            humpRulesWord.replace(0, 1, humpRulesWord.substring(0, 1).toUpperCase());
+//        }
+//        //根据下划线出现的次数进行遍历
+//        for (int i = 0; i < numberOfCharacters; i++) {
+//            //将下划线后一位转为大写
+//            humpRulesWord.replace(humpRulesWord.indexOf("_") + 1, humpRulesWord.indexOf("_") + 2, humpRulesWord.substring(humpRulesWord.indexOf("_") + 1, humpRulesWord.indexOf("_") + 2).toUpperCase());
+//            //去除转化过大写前的下划线
+//            humpRulesWord.replace(humpRulesWord.indexOf("_"), humpRulesWord.indexOf("_") + 1, "");
+//        }
+//        return humpRulesWord.toString();
+//    }
+
+    /**
+     * 转驼峰
+     *
+     * @param word   要转换的单词
+     * @param status big-大驼峰
+     * @return
+     */
     public static String toHumpRules(String word, String status) {
-        //获取下划线在单词中出现的次数
-        int numberOfCharacters = getNumberOfCharacters(word, '_');
-        //如果下划线出现的次数为0，将首字母大写并返回
-        if (numberOfCharacters == 0) {
-            if (status.equals("big")) {
-                word = word.replaceFirst(word.substring(0, 1), word.substring(0, 1).toUpperCase());
-            }
-            return word;
-        }
-        StringBuffer humpRulesWord = new StringBuffer(word);
+        word = word.toLowerCase();
         if (status.equals("big")) {
-            //将首字母大写
-            humpRulesWord.replace(0, 1, humpRulesWord.substring(0, 1).toUpperCase());
+            word = word.replaceFirst(word.substring(0, 1), word.substring(0, 1).toUpperCase());
         }
-        //根据下划线出现的次数进行遍历
-        for (int i = 0; i < numberOfCharacters; i++) {
-            //将下划线后一位转为大写
-            humpRulesWord.replace(humpRulesWord.indexOf("_") + 1, humpRulesWord.indexOf("_") + 2, humpRulesWord.substring(humpRulesWord.indexOf("_") + 1, humpRulesWord.indexOf("_") + 2).toUpperCase());
-            //去除转化过大写前的下划线
-            humpRulesWord.replace(humpRulesWord.indexOf("_"), humpRulesWord.indexOf("_") + 1, "");
+        char[] chars = word.toCharArray();
+        StringBuffer stringBuffer = new StringBuffer();
+
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == '_') {
+                String letter = String.valueOf(chars[i + 1]).toUpperCase();
+                stringBuffer.append(letter);
+                i++;
+            } else {
+                stringBuffer.append(chars[i]);
+            }
         }
-        return humpRulesWord.toString();
+        return stringBuffer.toString();
     }
 
 
